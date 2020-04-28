@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp">
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_weight = "2">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:id="@+id/tvStateName"
+            android:textStyle="bold"
+            android:layout_weight = "2"
+            android:textSize="18sp"
+            android:layout_marginStart="10dp"
+            android:text="State Name"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvTotalCases"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:paddingStart="30dp"
+            android:textStyle="bold"
+            android:text="Cases" />
+
+        <TextView
+            android:id="@+id/tvTodayCase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:paddingStart="30dp"
+            android:text="Cases"
+            android:textColor="#FF0000" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_weight = "1">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:id="@+id/tvTotalActive"
+            android:layout_weight = "1"
+            android:paddingStart="30dp"
+            android:textStyle="bold"
+            android:text="Active"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvTotalRecovered"
+            android:layout_weight = ".5"
+            android:paddingStart="30dp"
+            android:textStyle="bold"
+            android:text="Recoverd"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvTodayRecovered"
+            android:layout_weight = ".5"
+            android:paddingStart="30dp"
+            android:textColor="@color/list_g"
+            android:text="Recoverd"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvDeath"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight = ".5"
+            android:paddingStart="30dp"
+            android:textStyle="bold"
+            android:text="Deaths" />
+        <TextView
+            android:id="@+id/tvTodayDeath"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight = ".5"
+            android:paddingStart="30dp"
+            android:textColor="@color/list_d"
+            android:text="Deaths" />
+    </LinearLayout>
+</LinearLayout>

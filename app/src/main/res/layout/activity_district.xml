@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/color_white"
+    android:layout_height="match_parent"
+    tools:context=".DistrictActivity">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:id="@+id/edtSearch"
+        android:layout_margin="10dp"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:paddingLeft="10dp"
+        android:hint="Search"
+        android:drawablePadding="15dp"
+        android:background="@drawable/edittext_shadow"
+        android:drawableLeft="@drawable/ic_search_black_24dp"/>
+    <LinearLayout
+        android:id = "@+id/relativeLayout1"
+        android:layout_width = "fill_parent"
+        android:layout_height = "wrap_content"
+        android:layout_below="@+id/edtSearch"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight = "2"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/text_view_border"
+            android:text="States/UT"/>
+        <!--android:textSize="20sp"
+        android:textStyle="bold"
+        android:paddingLeft="15dp"/>-->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingStart="30dp"
+            android:text="C"
+            android:textColor="@color/list_c"
+            android:textSize="18sp"
+            android:background="@drawable/text_view_border"
+            android:textStyle="bold" />
+        <!--android:textSize="20sp"
+        android:textStyle="bold"
+        android:paddingLeft="15dp"/>-->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/text_view_border"
+            android:paddingStart="30dp"
+            android:text="A"
+            android:textColor="#024265"
+            android:textSize="18sp" />
+        <!--android:textSize="20sp"
+        android:textStyle="bold"
+        android:paddingLeft="15dp"/>-->
+        <TextView
+            android:id="@+id/tvTotalRecovered"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/text_view_border"
+            android:paddingStart="30dp"
+            android:text="R"
+            android:textColor="@color/list_g"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+        <!--android:textSize="20sp"
+        android:textStyle="bold"
+        android:paddingLeft="15dp"/>-->
+        <TextView
+            android:id="@+id/tvDeath"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight = "1"
+            android:textStyle="bold"
+            android:textColor="@color/list_d"
+            android:background="@drawable/text_view_border"
+            android:paddingStart="30dp"
+            android:textSize="18sp"
+            android:text="D" />
+        <!--android:textSize="20sp"
+        android:textStyle="bold"
+        android:paddingLeft="15dp"/>-->
+
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_below="@+id/relativeLayout1"/>
+    <com.leo.simplearcloader.SimpleArcLoader
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:id="@+id/loader"
+        app:arc_style="simple_arc"
+        android:visibility="visible"
+        android:layout_centerInParent="true"/>
+
+</RelativeLayout>
