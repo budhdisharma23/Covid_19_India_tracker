@@ -34,7 +34,7 @@
             android:textSize="18sp"
             android:layout_marginStart="10dp"
             android:background="@drawable/text_view_border"
-            android:text="States/UT"/>
+            android:text="District"/>
         <!--android:textSize="20sp"
         android:textStyle="bold"
         android:paddingLeft="15dp"/>-->

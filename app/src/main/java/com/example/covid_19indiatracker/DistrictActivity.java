@@ -3,6 +3,7 @@ package com.example.covid_19indiatracker;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,10 +17,17 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.leo.simplearcloader.SimpleArcLoader;
@@ -33,6 +41,9 @@ import java.util.List;
 
 public class DistrictActivity extends AppCompatActivity {
 
+    private static String TAG = DistrictActivity.class.getSimpleName();
+    String state;
+    int position;
     EditText edtSearch;
     ListView listView;
     SimpleArcLoader simpleArcLoader;
@@ -49,7 +60,13 @@ public class DistrictActivity extends AppCompatActivity {
         listView = findViewById(R.id.listView);
         simpleArcLoader = findViewById(R.id.loader);
 
-        getSupportActionBar().setTitle("Affected District");
+        Intent intent = getIntent();
+
+        position = intent.getIntExtra("position",0);
+        state = intent.getStringExtra("state");
+
+
+        getSupportActionBar().setTitle("Affected Districts of "+state);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -99,7 +116,7 @@ public class DistrictActivity extends AppCompatActivity {
 
     private void fetchData() {
 
-        String url  = "https://api.covid19india.org/data.json";
+        String url  = "https://api.covid19india.org/state_district_wise.json";
 
         simpleArcLoader.start();
 
@@ -111,28 +128,38 @@ public class DistrictActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
 
-
-
                         try {
                             //JSONObject jsonObject = response.getJSONObject(0);
-                            JSONObject jsonObject1 = new JSONObject(response.toString());
-                            JSONArray jsonArray = jsonObject1.getJSONArray("statewise");
-                            Log.d("Json response", "onResponse: "+jsonObject1.toString());
+                            //JSONObject jsonObject1 = new JSONObject(response.toString());
 
-                            for (int i = 1; i < jsonArray.length(); i++) {
+                           // JSONObject stateobj = jsonObject1.getJSONObject(state);
+
+                            JSONArray jsonArray = response.getJSONArray("districtData");
+                            for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-                                String state = jsonObject.getString("state");
+                                String state = jsonObject.getString("district");
                                 String cases = jsonObject.getString("confirmed");
-                                String tCase = jsonObject.getString("deltaconfirmed");
-                                String deaths = jsonObject.getString("deaths");
-                                String tDeath = jsonObject.getString("deltadeaths");
+
+                                String deaths = jsonObject.getString("deceased");
                                 String recovered = jsonObject.getString("recovered");
-                                String tRecover = jsonObject.getString("deltarecovered");
                                 String active = jsonObject.getString("active");
-                                districtModel = new DistrictModel(state,cases,tCase,deaths,tDeath,
-                                        recovered, tRecover, active);
-                                districtModelsList.add(districtModel);
+
+                                //String name = jsonObject.getString("delta");
+
+                                JSONArray today = jsonObject.getJSONArray("delta");
+                                for(int j=0; j<today.length(); j++)
+                                {
+                                    JSONObject obj = today.getJSONObject(j);
+
+                                    String tCase = obj.getString("confirmed");
+                                    String tDeath = obj.getString("deceased");
+                                    String tRecover = obj.getString("recovered");
+
+                                    districtModel = new DistrictModel(state,cases,tCase,deaths,tDeath,
+                                            recovered, tRecover, active);
+                                    districtModelsList.add(districtModel);
+                                }
                             }
 
                             myDistrictAdapter = new DistrictAdapter(DistrictActivity.this,
@@ -143,6 +170,8 @@ public class DistrictActivity extends AppCompatActivity {
 
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            Log.d(TAG, "onResponse: Exception Budhdi:"+e.getMessage());
+
                             simpleArcLoader.stop();
                             simpleArcLoader.setVisibility(View.GONE);
                         }
@@ -150,6 +179,25 @@ public class DistrictActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+
+                int errorCode = 0;
+                if (error instanceof TimeoutError) {
+                    errorCode = -7;
+                } else if (error instanceof NoConnectionError) {
+                    errorCode = -1;
+                } else if (error instanceof AuthFailureError) {
+                    errorCode = -6;
+                } else if (error instanceof ServerError) {
+                    errorCode = 0;
+                } else if (error instanceof NetworkError) {
+                    errorCode = -1;
+                } else if (error instanceof ParseError) {
+                    errorCode = -8;
+                }
+                //Toast.makeText(this, ErrorCode.errorCodeMap.get(errorCode), Toast.LENGTH_SHORT)
+                // .show();
+
+                Log.d(TAG, "onErrorResponse: Budhdi error Code::"+errorCode);
                 simpleArcLoader.stop();
                 simpleArcLoader.setVisibility(View.GONE);
                 Toast.makeText(DistrictActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();

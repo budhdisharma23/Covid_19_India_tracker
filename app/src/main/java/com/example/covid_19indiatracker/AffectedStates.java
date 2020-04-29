@@ -65,11 +65,12 @@ public class AffectedStates extends AppCompatActivity {
                 animation1.setDuration(500);
                 view.startAnimation(animation1);
 
-                String state = (String) listView.getItemAtPosition(position);
-                Log.d(TAG, "Budhdi "+state);
+                String state = AffectedStates.stateModelsList.get(position).getState();
+                Intent intent = new Intent(getApplicationContext(), DistrictActivity.class);
+                intent.putExtra("position", position);
+                intent.putExtra("state", state);
 
-                startActivity(new Intent(getApplicationContext(),DistrictActivity.class).putExtra("position",
-                        position));
+                startActivity(intent);
             }
         });
 
@@ -106,7 +107,7 @@ public class AffectedStates extends AppCompatActivity {
 
     private void fetchData() {
 
-        String url  = "https://api.covid19india.org/state_district_wise.json";
+        String url  = "https://api.covid19india.org/data.json";
 
         simpleArcLoader.start();
 
@@ -117,9 +118,6 @@ public class AffectedStates extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-
-
-
                         try {
                             //JSONObject jsonObject = response.getJSONObject(0);
                             JSONObject jsonObject1 = new JSONObject(response.toString());
