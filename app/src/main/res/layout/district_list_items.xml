@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight=".5"
-            android:paddingStart="30dp"
+            android:paddingStart="25dp"
             android:textStyle="bold"
             android:text="Cases" />
 
@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight=".5"
-            android:paddingStart="30dp"
+            android:paddingStart="25dp"
             android:text="Cases"
             android:textColor="#FF0000" />
 
@@ -56,7 +56,7 @@
             android:layout_height="45dp"
             android:id="@+id/tvTotalActive"
             android:layout_weight = "1"
-            android:paddingStart="30dp"
+            android:paddingStart="25dp"
             android:textStyle="bold"
             android:text="Active"/>
     </LinearLayout>
@@ -70,7 +70,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/tvTotalRecovered"
             android:layout_weight = ".5"
-            android:paddingStart="30dp"
+            android:paddingStart="25dp"
             android:textStyle="bold"
             android:text="Recoverd"/>
         <TextView
@@ -78,7 +78,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/tvTodayRecovered"
             android:layout_weight = ".5"
-            android:paddingStart="30dp"
+            android:paddingStart="25dp"
             android:textColor="@color/list_g"
             android:text="Recoverd"/>
 
@@ -95,7 +95,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight = ".5"
-            android:paddingStart="30dp"
+            android:paddingStart="25dp"
             android:textStyle="bold"
             android:text="Deaths" />
         <TextView
@@ -103,7 +103,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight = ".5"
-            android:paddingStart="30dp"
+            android:paddingStart="25dp"
             android:textColor="@color/list_d"
             android:text="Deaths" />
     </LinearLayout>

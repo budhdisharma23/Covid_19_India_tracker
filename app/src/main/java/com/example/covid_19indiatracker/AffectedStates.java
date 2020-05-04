@@ -65,12 +65,16 @@ public class AffectedStates extends AppCompatActivity {
                 animation1.setDuration(500);
                 view.startAnimation(animation1);
 
+
                 String state = AffectedStates.stateModelsList.get(position).getState();
+
+                Log.d(TAG, "onItemClick: Budhdi 12:"+position);
+
                 Intent intent = new Intent(getApplicationContext(), DistrictActivity.class);
                 intent.putExtra("position", position);
                 intent.putExtra("state", state);
-
                 startActivity(intent);
+                position = 0;
             }
         });
 
@@ -164,4 +168,6 @@ public class AffectedStates extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(jsonObjectRequest);
     }
+
+
 }

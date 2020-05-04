@@ -75,8 +75,6 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
 
-
-
                         try {
                             //JSONObject jsonObject = response.getJSONObject(0);
                             JSONObject jsonObject1 = new JSONObject(response.toString());

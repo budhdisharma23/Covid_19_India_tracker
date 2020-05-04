@@ -37,13 +37,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class DistrictActivity extends AppCompatActivity {
 
     private static String TAG = DistrictActivity.class.getSimpleName();
     String state;
-    int position;
+    private int position;
     EditText edtSearch;
     ListView listView;
     SimpleArcLoader simpleArcLoader;
@@ -51,26 +52,29 @@ public class DistrictActivity extends AppCompatActivity {
     public static List<DistrictModel> districtModelsList = new ArrayList<>();
     DistrictModel districtModel;
     DistrictAdapter myDistrictAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_district);
 
+        districtModelsList.clear();
         edtSearch = findViewById(R.id.edtSearch);
         listView = findViewById(R.id.listView);
         simpleArcLoader = findViewById(R.id.loader);
 
         Intent intent = getIntent();
 
-        position = intent.getIntExtra("position",0);
+        position = intent.getIntExtra("position", 0);
         state = intent.getStringExtra("state");
 
 
-        getSupportActionBar().setTitle("Affected Districts of "+state);
+        getSupportActionBar().setTitle("Affected Districts of " + state);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        fetchData();
+        //fetchData();
+        getData();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -80,7 +84,8 @@ public class DistrictActivity extends AppCompatActivity {
                 view.startAnimation(animation1);
 
                 /*startActivity(new Intent(getApplicationContext(),DetailActivity.class).putExtra("position",position));
-                 */}
+                 */
+            }
         });
 
 
@@ -106,61 +111,65 @@ public class DistrictActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId()==android.R.id.home)
+        if (item.getItemId() == android.R.id.home)
             finish();
         return super.onOptionsItemSelected(item);
     }
 
-    private void fetchData() {
+    private void getData() {
 
-        String url  = "https://api.covid19india.org/state_district_wise.json";
+        String url = "https://api.covid19india.org/v2/state_district_wise.json";
 
         simpleArcLoader.start();
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.GET,
-                url,
-                null,
-                new Response.Listener<JSONObject>() {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONArray>() {
                     @Override
-                    public void onResponse(JSONObject response) {
-
+                    public void onResponse(JSONArray response) {
                         try {
-                            //JSONObject jsonObject = response.getJSONObject(0);
-                            //JSONObject jsonObject1 = new JSONObject(response.toString());
+                            //JSONObject jobj = new JSONObject(response.toString());
 
-                           // JSONObject stateobj = jsonObject1.getJSONObject(state);
+                            for (int j = 0; j<response.length(); j++) {
 
-                            JSONArray jsonArray = response.getJSONArray("districtData");
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                JSONObject jbj = response.getJSONObject(j);
 
-                                String state = jsonObject.getString("district");
-                                String cases = jsonObject.getString("confirmed");
+                                String currentState = jbj.getString("state");
 
-                                String deaths = jsonObject.getString("deceased");
-                                String recovered = jsonObject.getString("recovered");
-                                String active = jsonObject.getString("active");
+                                if (state.equalsIgnoreCase(currentState)) {
 
-                                //String name = jsonObject.getString("delta");
+                                    JSONArray jsonArray = jbj.getJSONArray("districtData");
 
-                                JSONArray today = jsonObject.getJSONArray("delta");
-                                for(int j=0; j<today.length(); j++)
-                                {
-                                    JSONObject obj = today.getJSONObject(j);
+                                    for (int i=0; i<jsonArray.length(); i++) {
 
-                                    String tCase = obj.getString("confirmed");
-                                    String tDeath = obj.getString("deceased");
-                                    String tRecover = obj.getString("recovered");
 
-                                    districtModel = new DistrictModel(state,cases,tCase,deaths,tDeath,
-                                            recovered, tRecover, active);
-                                    districtModelsList.add(districtModel);
-                                }
+                                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                        String state = jsonObject.getString("district");
+                                        String cases = jsonObject.getString("confirmed");
+
+                                        String deaths = jsonObject.getString("deceased");
+                                        String recovered = jsonObject.getString("recovered");
+                                        String active = jsonObject.getString("active");
+
+                                        //String name = jsonObject.getString("delta");
+
+                                        JSONObject object = jsonObject.getJSONObject("delta");
+
+                                        String tCase = object.getString("confirmed");
+                                        String tDeath = object.getString("deceased");
+                                        String tRecover = object.getString("recovered");
+
+                                        districtModel = new DistrictModel(state, cases, tCase, deaths, tDeath,
+                                                recovered, tRecover, active);
+                                        districtModelsList.add(districtModel);
+
+                                    }
+
                             }
+
+
+                                }
 
                             myDistrictAdapter = new DistrictAdapter(DistrictActivity.this,
                                     districtModelsList);
@@ -170,7 +179,7 @@ public class DistrictActivity extends AppCompatActivity {
 
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Log.d(TAG, "onResponse: Exception Budhdi:"+e.getMessage());
+                            Log.d(TAG, "onResponse: Exception Budhdi:" + e.getMessage());
 
                             simpleArcLoader.stop();
                             simpleArcLoader.setVisibility(View.GONE);
@@ -197,7 +206,123 @@ public class DistrictActivity extends AppCompatActivity {
                 //Toast.makeText(this, ErrorCode.errorCodeMap.get(errorCode), Toast.LENGTH_SHORT)
                 // .show();
 
-                Log.d(TAG, "onErrorResponse: Budhdi error Code::"+errorCode);
+                Log.d(TAG, "onErrorResponse: Budhdi error Code::" + errorCode);
+                simpleArcLoader.stop();
+                simpleArcLoader.setVisibility(View.GONE);
+                Toast.makeText(DistrictActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(jsonArrayRequest);
+
+    }
+
+    private void fetchData() {
+
+        String url = "https://api.covid19india.org/v2/state_district_wise.json";
+
+        simpleArcLoader.start();
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET,
+                url,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        JSONObject jsonObject1 = null;
+
+                        try {
+                            //JSONObject jsonObject = response.getJSONObject(0);
+                            jsonObject1 = new JSONObject(response.toString());
+
+                            JSONObject stateobj = jsonObject1.getJSONObject(state);
+
+                            JSONArray arr = stateobj.names();
+
+                            JSONArray array = (JSONArray) stateobj.toJSONArray(arr).get(0);
+
+                            //JSONArray jsonArray = stateobj.getJSONArray("districtData");
+
+
+                            /*for (Iterator<String> it = jsonArray.keys(); it.hasNext(); ) {
+                                String key = it.next();
+                                JSONObject entry = jsonArray.getJSONObject(key);
+                                Log.d(TAG, "Budhdi Sharma:" + entry.toString());
+
+                            }*/
+
+                            /*JSONObject jobj1 = array.getJSONObject(0);
+
+                            JSONArray arr1 = jobj1.names();
+
+                            JSONArray array1 = jobj1.toJSONArray(arr1);*/
+
+                            //JSONArray jarray = jobj.getJSONArray("districtData");
+
+                            for (int i = 0; i < array.length(); i++) {
+                                JSONObject jsonObject = array.getJSONObject(i);
+
+                                String state = jsonObject.getString("district");
+                                String cases = jsonObject.getString("confirmed");
+
+                                String deaths = jsonObject.getString("deceased");
+                                String recovered = jsonObject.getString("recovered");
+                                String active = jsonObject.getString("active");
+
+                                //String name = jsonObject.getString("delta");
+
+                                JSONArray today = jsonObject.getJSONArray("delta");
+                                for (int j = 0; j < today.length(); j++) {
+                                    JSONObject obj = today.getJSONObject(j);
+
+                                    String tCase = obj.getString("confirmed");
+                                    String tDeath = obj.getString("deceased");
+                                    String tRecover = obj.getString("recovered");
+
+                                    districtModel = new DistrictModel(state, cases, tCase, deaths, tDeath,
+                                            recovered, tRecover, active);
+                                    districtModelsList.add(districtModel);
+                                }
+                            }
+
+                            myDistrictAdapter = new DistrictAdapter(DistrictActivity.this,
+                                    districtModelsList);
+                            listView.setAdapter(myDistrictAdapter);
+                            simpleArcLoader.stop();
+                            simpleArcLoader.setVisibility(View.GONE);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.d(TAG, "onResponse: Exception Budhdi:" + e.getMessage());
+
+                            simpleArcLoader.stop();
+                            simpleArcLoader.setVisibility(View.GONE);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                int errorCode = 0;
+                if (error instanceof TimeoutError) {
+                    errorCode = -7;
+                } else if (error instanceof NoConnectionError) {
+                    errorCode = -1;
+                } else if (error instanceof AuthFailureError) {
+                    errorCode = -6;
+                } else if (error instanceof ServerError) {
+                    errorCode = 0;
+                } else if (error instanceof NetworkError) {
+                    errorCode = -1;
+                } else if (error instanceof ParseError) {
+                    errorCode = -8;
+                }
+                //Toast.makeText(this, ErrorCode.errorCodeMap.get(errorCode), Toast.LENGTH_SHORT)
+                // .show();
+
+                Log.d(TAG, "onErrorResponse: Budhdi error Code::" + errorCode);
                 simpleArcLoader.stop();
                 simpleArcLoader.setVisibility(View.GONE);
                 Toast.makeText(DistrictActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
@@ -208,3 +333,4 @@ public class DistrictActivity extends AppCompatActivity {
         requestQueue.add(jsonObjectRequest);
     }
 }
+
