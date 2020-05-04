@@ -83,8 +83,8 @@ public class DistrictActivity extends AppCompatActivity {
                 animation1.setDuration(500);
                 view.startAnimation(animation1);
 
-                /*startActivity(new Intent(getApplicationContext(),DetailActivity.class).putExtra("position",position));
-                 */
+                startActivity(new Intent(getApplicationContext(),DetailedDistrict.class).putExtra("position",
+                        position));
             }
         });
 
